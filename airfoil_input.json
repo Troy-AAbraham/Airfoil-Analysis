@@ -1,0 +1,34 @@
+{
+    "geometry" : {
+        "airfoil" : "UL08",
+        "airfoil_options" : "xxxx = NACA 4-digit series, ULxx = Uniform Load (requires CL_design), file = read airfoil from file (requires filename)",
+        "CL_design" : 0.25,
+        "filename" : "complex_airfoil.txt",
+        "trailing_edge" : "closed",
+        "trailing_edge_options" : "open = standard NACA 4-digit open trailing edge, closed = modified thickness to close trailing edge",
+        "n_points" : 200
+    },
+    "operating" : {
+        "freestream_velocity" : 10.0,
+        "alpha[deg]" : 5.0
+    },
+    "alpha_sweep" : {
+        "start[deg]" : -2.0,
+        "end[deg]" : 2.0,
+        "increment[deg]" : 2.0
+    },
+    "plot_options" : {
+        "x_start" : -1.0,
+        "x_lower_limit" : -1.0,
+        "x_upper_limit" : 2.0,
+        "delta_s" : 0.01,
+        "n_lines" : 8,
+        "delta_y" : 0.1
+    },
+    "run_commands" : {
+        "plot_streamlines" : true,
+        "plot_pressure" : true,
+        "alpha_sweep" : false,
+        "export_geometry" : false
+    }
+}
