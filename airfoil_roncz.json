@@ -1,20 +1,20 @@
 {
     "geometry" : {
-        "airfoil" : "2412",
+        "airfoil" : "file",
         "airfoil_options" : "xxxx = NACA 4-digit series, ULxx = Uniform Load (requires CL_design), file = read airfoil from file (requires filename)",
         "CL_design" : 0.25,
-        "filename" : "complex_airfoil.txt",
-        "trailing_edge" : "closed",
+        "filename" : "roncz_low_drag.txt",
+        "trailing_edge" : "open",
         "trailing_edge_options" : "open = standard NACA 4-digit open trailing edge, closed = modified thickness to close trailing edge",
         "n_points" : 200
     },
     "operating" : {
-        "freestream_velocity" : 10.0,
+        "freestream_velocity" : 5.0,
         "alpha[deg]" : 5.0
     },
     "alpha_sweep" : {
         "start[deg]" : -6.0,
-        "end[deg]" : 14.0,
+        "end[deg]" : 16.0,
         "increment[deg]" : 2.0
     },
     "plot_options" : {

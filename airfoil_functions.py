@@ -14,17 +14,19 @@ class airfoil_potential:
         # airfoil geometry inputs
         self.NACA_number = json_vals["geometry"]["airfoil"]
 
-        if self.NACA_number[:2] != 'UL':
-            self.m = int(self.NACA_number[0])/100.
-            self.p = int(self.NACA_number[1])/10.
-
-        self.point_filename = json_vals["geometry"]["filename"]
-
-        self.t = int(self.NACA_number[2:])
-        self.max_t = self.t/100.
-
-        self.CL_d = json_vals["geometry"]["CL_design"]
+        if self.NACA_number == 'file':
+            pass
+        else:
+            if self.NACA_number[:2] != 'UL':
+                self.m = int(self.NACA_number[0])/100.
+                self.p = int(self.NACA_number[1])/10.
+    
+            self.t = int(self.NACA_number[2:])
+            self.max_t = self.t/100.
+            self.CL_d = json_vals["geometry"]["CL_design"]
+            
         self.naca4_TE = json_vals["geometry"]["trailing_edge"]
+        self.point_filename = json_vals["geometry"]["filename"]    
         self.n = json_vals["geometry"]["n_points"]
         self.alpha_zero = -2.077
         self.chord = 1.
@@ -81,9 +83,15 @@ class airfoil_potential:
         if self.alpha_sweep == True:
             # creates range of alpha values for alpha sweep
             self.alpha_d_range = np.arange(self.alpha_start, self.alpha_end + self.alpha_increment, self.alpha_increment)
+            self.CL_range = np.zeros(len(self.alpha_d_range))
+            self.CM_range = np.zeros(len(self.alpha_d_range))
+            self.CM4_range = np.zeros(len(self.alpha_d_range))
         else:
             # if no alpha sweep, creates list using input alpha
             self.alpha_d_range = [self.alpha_d]
+            self.CL_range = [0]
+            self.CM_range = [0]
+            self.CM4_range = [0]
             
         for i in range(len(self.alpha_d_range)):
             # runs alpha sweep
@@ -93,6 +101,19 @@ class airfoil_potential:
             self.gamma = self.solve_gamma(self.n, self.alpha_rad, self.A, self.len_panel, self.xn, self.yn)
             
             print('\nRunning Alpha = ', self.alpha_d)
+            
+            self.solve_surface_pressure()
+            
+            CL, CM, CM4, CL_TAT = self.solve_coefficients(self.alpha_rad)
+            
+            self.CL_range[i] = CL
+            self.CM_range[i] = CM
+            self.CM4_range[i] = CM4
+
+            print('\nAirfoil :', self.NACA_number)
+            print('CL:     ', '{:.16f}'.format(CL))
+            print('Cm:     ', '{:.16f}'.format(CM))
+            print('Cm,c/4: ', '{:.16f}'.format(CM4))
             
             # result plotting conditions
             if self.plot_pressure == True:
@@ -698,8 +719,6 @@ class airfoil_potential:
 
     def plot_pressures(self, fig_num):
         
-        self.solve_surface_pressure()
-        
         plt.figure(fig_num)
         plt.title('Surface Pressure Coefficient, Airfoil: ' + self.NACA_number +', TE: ' + self.naca4_TE + ', AoA [deg]: ' + str(self.alpha_d))
         plt.plot(self.x_Cp, self.Cp, color = 'k')
@@ -708,13 +727,6 @@ class airfoil_potential:
         plt.xlim(0, self.chord)
         plt.gca().invert_yaxis()
         plt.show()
-        
-        CL, CM, CM4, CL_TAT = self.solve_coefficients(self.alpha_rad)
-
-        print('\nAirfoil :', self.NACA_number)
-        print('CL:     ', '{:.16f}'.format(CL))
-        print('Cm:     ', '{:.16f}'.format(CM))
-        print('Cm,c/4: ', '{:.16f}'.format(CM4))
         
     def plot_airfoil(self, fig_num):
 
